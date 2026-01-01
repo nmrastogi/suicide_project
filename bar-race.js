@@ -141,9 +141,9 @@ function renderBarChartRace() {
     if (!containerNode) return;
     
     const width = containerNode.getBoundingClientRect().width;
-    // Show top 25 states to reduce clutter
-    const maxStatesToShow = 25;
-    const height = maxStatesToShow * 35 + 100;
+    // Show all states
+    const totalStates = processedData.allStates ? processedData.allStates.length : 51;
+    const height = totalStates * 35 + 100;
     // Define label area and bar start position clearly
     const labelAreaWidth = 200; // Space reserved for labels on the left
     const barStartX = labelAreaWidth + 20; // Bars start after labels with 20px gap
@@ -156,7 +156,7 @@ function renderBarChartRace() {
     // Get data for current year
     const yearData = processedData.byYear[currentRaceYear] || [];
     
-    // Sort by selected metric (descending) and limit to top states
+    // Sort by selected metric (descending) - show all states
     const sortedData = yearData
         .map(d => ({
             state: d.state,
@@ -164,8 +164,7 @@ function renderBarChartRace() {
             rate: d.rate,
             value: raceMetric === 'deaths' ? d.deaths : d.rate
         }))
-        .sort((a, b) => b.value - a.value)
-        .slice(0, maxStatesToShow); // Show only top states
+        .sort((a, b) => b.value - a.value);
 
     if (sortedData.length === 0) return;
 
