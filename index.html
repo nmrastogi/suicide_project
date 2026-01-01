@@ -78,6 +78,40 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Bar Chart Race - Automatic animation -->
+            <div class="viz-section bar-race-section">
+                <h2>Bar Chart Race</h2>
+                <p style="margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
+                    Watch how states rank over time from 2014 to 2023.
+                </p>
+                <div class="scroll-viz-controls">
+                    <div class="toggle-buttons" id="race-metric-toggle">
+                        <button class="toggle-btn active" data-metric="deaths">Total Deaths</button>
+                        <button class="toggle-btn" data-metric="rate">Age Adjusted Rate</button>
+                    </div>
+                    <div class="race-controls" style="margin-left: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <button id="play-pause-btn" class="toggle-btn" style="min-width: 80px;">
+                            <span id="play-pause-text">Pause</span>
+                        </button>
+                        <label style="font-size: 0.85rem; color: var(--text-secondary);">
+                            Speed: 
+                            <input type="range" id="speed-slider" min="200" max="2000" value="800" step="100" style="width: 100px; margin: 0 0.5rem;">
+                            <span id="speed-display">800ms</span>
+                        </label>
+                    </div>
+                </div>
+                <div id="bar-race-container">
+                    <div id="bar-race-chart">
+                        <svg id="bar-race-svg"></svg>
+                    </div>
+                    <div id="race-year-indicator">
+                        <div id="current-year-display">2014</div>
+                        <div id="year-progress"></div>
+                        <div id="total-value-display"></div>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 

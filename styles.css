@@ -421,3 +421,94 @@ select:focus {
     transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
+/* Bar Chart Race visualization */
+.bar-race-section {
+    margin-top: 3rem;
+}
+
+.scroll-viz-controls {
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.race-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#speed-slider {
+    width: 100px;
+    margin: 0 0.5rem;
+    cursor: pointer;
+}
+
+#bar-race-container {
+    position: sticky;
+    top: 2rem;
+    background: var(--surface);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    min-height: 600px;
+}
+
+#bar-race-chart {
+    width: 100%;
+    min-height: 500px;
+}
+
+#bar-race-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.race-bar {
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.race-bar:hover {
+    opacity: 0.8;
+}
+
+.state-label {
+    pointer-events: none;
+}
+
+.value-label {
+    pointer-events: none;
+}
+
+#race-year-indicator {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--border-color);
+}
+
+#current-year-display {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    line-height: 1;
+}
+
+#year-progress {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+#total-value-display {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent-color);
+}
+

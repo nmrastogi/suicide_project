@@ -7,6 +7,13 @@ let selectedMetric = 'deaths';
 let selectedStates = new Set();
 let comparisonMode = false;
 let colorScale = null;
+let scrollMetric = 'deaths';
+let currentScrollStateIndex = 0;
+let raceMetric = 'deaths';
+let currentRaceYear = 2014;
+let isRacePlaying = true;
+let raceAnimationInterval = null;
+let raceSpeed = 800; // milliseconds per year
 
 // State name mapping for TopoJSON
 const stateNameMap = {
@@ -30,6 +37,7 @@ async function init() {
     await loadData();
     await loadMap();
     setupControls();
+    setupBarChartRace();
     updateAllVisualizations();
 }
 
@@ -659,6 +667,288 @@ function moveTooltip(event) {
 
 function hideTooltip() {
     d3.select('#tooltip').classed('visible', false);
+}
+
+// Setup bar chart race visualization
+function setupBarChartRace() {
+    // Metric toggle for bar race
+    d3.selectAll('#race-metric-toggle .toggle-btn').on('click', function() {
+        d3.selectAll('#race-metric-toggle .toggle-btn').classed('active', false);
+        d3.select(this).classed('active', true);
+        raceMetric = d3.select(this).attr('data-metric');
+        renderBarChartRace();
+    });
+
+    // Play/Pause button
+    d3.select('#play-pause-btn').on('click', function() {
+        isRacePlaying = !isRacePlaying;
+        updatePlayPauseButton();
+        if (isRacePlaying) {
+            startRaceAnimation();
+        } else {
+            stopRaceAnimation();
+        }
+    });
+
+    // Speed slider
+    const speedSlider = d3.select('#speed-slider');
+    const speedDisplay = d3.select('#speed-display');
+    
+    speedSlider.on('input', function() {
+        raceSpeed = +this.value;
+        speedDisplay.text(`${raceSpeed}ms`);
+        if (isRacePlaying) {
+            stopRaceAnimation();
+            startRaceAnimation();
+        }
+    });
+
+    // Initial render
+    renderBarChartRace();
+    
+    // Update button state
+    updatePlayPauseButton();
+    
+    // Start automatic animation
+    startRaceAnimation();
+}
+
+// Start the automatic animation
+function startRaceAnimation() {
+    if (raceAnimationInterval) {
+        clearInterval(raceAnimationInterval);
+    }
+    
+    raceAnimationInterval = setInterval(function() {
+        if (isRacePlaying) {
+            currentRaceYear++;
+            if (currentRaceYear > 2023) {
+                currentRaceYear = 2014; // Loop back to start
+            }
+            renderBarChartRace();
+        }
+    }, raceSpeed);
+}
+
+// Stop the automatic animation
+function stopRaceAnimation() {
+    if (raceAnimationInterval) {
+        clearInterval(raceAnimationInterval);
+        raceAnimationInterval = null;
+    }
+}
+
+// Update play/pause button text
+function updatePlayPauseButton() {
+    const btn = d3.select('#play-pause-btn');
+    const text = d3.select('#play-pause-text');
+    if (isRacePlaying) {
+        text.text('Pause');
+        btn.classed('active', false);
+    } else {
+        text.text('Play');
+        btn.classed('active', true);
+    }
+}
+
+// Render bar chart race for current year
+function renderBarChartRace() {
+    if (!processedData.byYear || !processedData.byYear[currentRaceYear]) return;
+
+    const container = d3.select('#bar-race-chart');
+    const containerNode = container.node();
+    if (!containerNode) return;
+    
+    const width = containerNode.getBoundingClientRect().width;
+    const height = Math.min(800, processedData.allStates.length * 25 + 100);
+    const margin = { top: 20, right: 150, bottom: 40, left: 120 };
+
+    const svg = d3.select('#bar-race-svg')
+        .attr('width', width)
+        .attr('height', height);
+
+    // Get data for current year
+    const yearData = processedData.byYear[currentRaceYear] || [];
+    
+    // Sort by selected metric (descending)
+    const sortedData = yearData
+        .map(d => ({
+            state: d.state,
+            deaths: d.deaths,
+            rate: d.rate,
+            value: raceMetric === 'deaths' ? d.deaths : d.rate
+        }))
+        .sort((a, b) => b.value - a.value)
+        // Show all states
+
+    if (sortedData.length === 0) return;
+
+    // Scales
+    const maxValue = d3.max(sortedData, d => d.value);
+    const xScale = d3.scaleLinear()
+        .domain([0, maxValue * 1.1])
+        .range([margin.left, width - margin.right]);
+
+    const yScale = d3.scaleBand()
+        .domain(sortedData.map(d => d.state))
+        .range([margin.top, height - margin.bottom])
+        .padding(0.15);
+
+    // Color scale
+    const colorScale = d3.scaleSequential(d3.interpolateYlOrRd)
+        .domain([d3.min(sortedData, d => d.value), maxValue]);
+
+    // Clear previous render
+    svg.selectAll('*').remove();
+
+    // Grid lines
+    const xTicks = xScale.ticks(5);
+    svg.append('g')
+        .selectAll('line')
+        .data(xTicks)
+        .enter()
+        .append('line')
+        .attr('class', 'grid-line')
+        .attr('x1', d => xScale(d))
+        .attr('x2', d => xScale(d))
+        .attr('y1', margin.top)
+        .attr('y2', height - margin.bottom);
+
+    // Axes
+    const xAxis = d3.axisTop(xScale).tickFormat(d => {
+        if (raceMetric === 'deaths') {
+            return d >= 1000 ? `${(d / 1000).toFixed(0)}k` : d.toString();
+        }
+        return d.toFixed(1);
+    });
+    const yAxis = d3.axisLeft(yScale);
+
+    svg.append('g')
+        .attr('transform', `translate(0, ${margin.top})`)
+        .attr('class', 'axis')
+        .call(xAxis);
+
+    svg.append('g')
+        .attr('transform', `translate(${margin.left}, 0)`)
+        .attr('class', 'axis')
+        .call(yAxis);
+
+    // Bars with animation
+    const bars = svg.selectAll('.race-bar')
+        .data(sortedData, d => d.state);
+
+    // Enter: new bars
+    const barsEnter = bars.enter()
+        .append('rect')
+        .attr('class', 'race-bar')
+        .attr('x', margin.left)
+        .attr('y', d => yScale(d.state))
+        .attr('width', 0)
+        .attr('height', yScale.bandwidth())
+        .attr('fill', d => colorScale(d.value))
+        .attr('rx', 4)
+        .attr('ry', 4);
+
+    // Update: animate existing bars
+    barsEnter.merge(bars)
+        .transition()
+        .duration(500)
+        .ease(d3.easeCubicOut)
+        .attr('x', margin.left)
+        .attr('y', d => yScale(d.state))
+        .attr('width', d => xScale(d.value) - margin.left)
+        .attr('height', yScale.bandwidth())
+        .attr('fill', d => colorScale(d.value));
+
+    // Exit: remove old bars
+    bars.exit()
+        .transition()
+        .duration(300)
+        .attr('width', 0)
+        .remove();
+
+    // State labels on bars
+    const labels = svg.selectAll('.state-label')
+        .data(sortedData, d => d.state);
+
+    labels.enter()
+        .append('text')
+        .attr('class', 'state-label')
+        .merge(labels)
+        .transition()
+        .duration(500)
+        .attr('x', margin.left - 10)
+        .attr('y', d => yScale(d.state) + yScale.bandwidth() / 2)
+        .attr('dy', '0.35em')
+        .attr('text-anchor', 'end')
+        .attr('font-size', '14px')
+        .attr('font-weight', '500')
+        .attr('fill', '#2c3e50')
+        .text(d => d.state);
+
+    labels.exit().remove();
+
+    // Value labels at end of bars
+    const valueLabels = svg.selectAll('.value-label')
+        .data(sortedData, d => d.state);
+
+    valueLabels.enter()
+        .append('text')
+        .attr('class', 'value-label')
+        .merge(valueLabels)
+        .transition()
+        .duration(500)
+        .attr('x', d => xScale(d.value) + 10)
+        .attr('y', d => yScale(d.state) + yScale.bandwidth() / 2)
+        .attr('dy', '0.35em')
+        .attr('text-anchor', 'start')
+        .attr('font-size', '13px')
+        .attr('font-weight', '600')
+        .attr('fill', '#2c3e50')
+        .text(d => {
+            if (raceMetric === 'deaths') {
+                return d.deaths.toLocaleString();
+            }
+            return d.rate.toFixed(2);
+        });
+
+    valueLabels.exit().remove();
+
+    // Hover interactions
+    svg.selectAll('.race-bar')
+        .on('mouseover', function(event, d) {
+            showTooltip(event, {
+                title: `${d.state} - ${currentRaceYear}`,
+                items: [
+                    { label: 'Rank', value: `#${sortedData.indexOf(d) + 1}` },
+                    { label: 'Deaths', value: d.deaths.toLocaleString() },
+                    { label: 'Age Adjusted Rate', value: d.rate.toFixed(2) }
+                ]
+            });
+            d3.select(this).attr('opacity', 0.8);
+        })
+        .on('mousemove', moveTooltip)
+        .on('mouseout', function() {
+            hideTooltip();
+            d3.select(this).attr('opacity', 1);
+        });
+
+    // Update year indicator
+    d3.select('#current-year-display').text(currentRaceYear);
+    d3.select('#year-progress').text(
+        `Year ${currentRaceYear - 2013} of 10 (2014-2023)`
+    );
+    
+    // Calculate and display total
+    const total = raceMetric === 'deaths' 
+        ? yearData.reduce((sum, d) => sum + d.deaths, 0)
+        : yearData.reduce((sum, d) => sum + d.rate, 0) / yearData.length;
+    
+    d3.select('#total-value-display').text(
+        raceMetric === 'deaths' 
+            ? `Total: ${total.toLocaleString()}`
+            : `Average: ${total.toFixed(2)}`
+    );
 }
 
 // Initialize on page load
