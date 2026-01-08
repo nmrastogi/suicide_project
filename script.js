@@ -172,6 +172,11 @@ function setupControls() {
     d3.select('#open-animated-map-btn').on('click', function() {
         window.open('animated-map.html', '_blank');
     });
+
+    // Open line graph race in new page
+    d3.select('#open-line-race-btn').on('click', function() {
+        window.open('line-race.html', '_blank');
+    });
 }
 
 // Update all visualizations
