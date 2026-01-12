@@ -13,6 +13,18 @@
         <h1>US Suicide Statistics Visualization</h1>
         <p class="subtitle">Data from 2014-2023 by State</p>
         <p class="subtitle" style="font-size: 0.85rem; margin-top: 0.5rem;">Interactive map and charts showing trends over time</p>
+        
+        <nav class="top-nav">
+            <button id="open-race-combined-btn" class="nav-btn" data-tooltip="Bar Chart Race: Watch how states rank over time. Line Graph Race: Select states and watch animated line graphs showing trends from 2014 to 2023. Both visualizations are available on one page.">
+                Race Visualizations
+            </button>
+            <button id="open-animated-map-btn" class="nav-btn" data-tooltip="Watch how state colors change over time from 2014 to 2023 with automatic year progression.">
+                Animated Map
+            </button>
+            <button id="open-scroll-map-btn" class="nav-btn" data-tooltip="Scroll down the page to see the map change year by year from 2014 to 2023. The year updates automatically as you scroll.">
+                Scroll Map
+            </button>
+        </nav>
     </header>
 
     <div class="container">
@@ -80,38 +92,6 @@
                 </div>
             </div>
 
-            <!-- Race Visualizations - Combined -->
-            <div class="viz-section">
-                <h2>Race Visualizations</h2>
-                <p style="margin-bottom: 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">
-                    Bar Chart Race: Watch how states rank over time. Line Graph Race: Select states and watch animated line graphs showing trends from 2014 to 2023. Both visualizations are available on one page.
-                </p>
-                <button id="open-race-combined-btn" class="toggle-btn" style="padding: 0.5rem 1rem; font-size: 0.85rem; width: auto; display: inline-block; max-width: 300px;">
-                    Open Race Visualizations in New Page
-                </button>
-            </div>
-
-            <!-- Animated Map - Button to open in new page -->
-            <div class="viz-section">
-                <h2>Animated Map</h2>
-                <p style="margin-bottom: 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">
-                    Watch how state colors change over time from 2014 to 2023.
-                </p>
-                <button id="open-animated-map-btn" class="toggle-btn" style="padding: 0.5rem 1rem; font-size: 0.85rem; width: auto; display: inline-block; max-width: 300px;">
-                    Open Animated Map in New Page
-                </button>
-            </div>
-
-            <!-- Scroll Map - Button to open in new page -->
-            <div class="viz-section">
-                <h2>Scroll Map</h2>
-                <p style="margin-bottom: 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">
-                    Scroll down the page to see the map change year by year from 2014 to 2023. The year updates automatically as you scroll.
-                </p>
-                <button id="open-scroll-map-btn" class="toggle-btn" style="padding: 0.5rem 1rem; font-size: 0.85rem; width: auto; display: inline-block; max-width: 300px;">
-                    Open Scroll Map in New Page
-                </button>
-            </div>
         </main>
     </div>
 
