@@ -242,7 +242,7 @@ function renderBarChartRace() {
         .sort((a, b) => b.value - a.value);
     
     const numStatesToShow = sortedData.length || 1;
-    const height = Math.max(400, numStatesToShow * 28 + 80);
+    const height = Math.max(400, numStatesToShow * 24 + 60);
 
     const svg = d3.select('#bar-race-svg')
         .attr('width', width)
@@ -258,7 +258,7 @@ function renderBarChartRace() {
     const yScale = d3.scaleBand()
         .domain(sortedData.map(d => d.state))
         .range([margin.top, height - margin.bottom])
-        .padding(0.25);
+        .padding(0.2);
 
     const colorScale = d3.scaleSequential(d3.interpolateYlOrRd)
         .domain([d3.min(sortedData, d => d.value), maxValue]);
