@@ -15,15 +15,24 @@
         <p class="subtitle" style="font-size: 0.85rem; margin-top: 0.5rem;">Interactive map and charts showing trends over time</p>
         
         <nav class="top-nav">
-            <button id="open-race-combined-btn" class="nav-btn" data-tooltip="Bar Chart Race: Watch how states rank over time. Line Graph Race: Select states and watch animated line graphs showing trends from 2014 to 2023. Both visualizations are available on one page.">
-                Race Visualizations
-            </button>
-            <button id="open-animated-map-btn" class="nav-btn" data-tooltip="Watch how state colors change over time from 2014 to 2023 with automatic year progression.">
-                Animated Map
-            </button>
-            <button id="open-scroll-map-btn" class="nav-btn" data-tooltip="Scroll down the page to see the map change year by year from 2014 to 2023. The year updates automatically as you scroll.">
-                Scroll Map
-            </button>
+            <div class="nav-btn-wrapper">
+                <button id="open-race-combined-btn" class="nav-btn">
+                    Race Visualizations
+                </button>
+                <div class="nav-description">Bar Chart Race: Watch how states rank over time. Line Graph Race: Select states and watch animated line graphs showing trends from 2014 to 2023. Both visualizations are available on one page.</div>
+            </div>
+            <div class="nav-btn-wrapper">
+                <button id="open-animated-map-btn" class="nav-btn">
+                    Animated Map
+                </button>
+                <div class="nav-description">Watch how state colors change over time from 2014 to 2023 with automatic year progression.</div>
+            </div>
+            <div class="nav-btn-wrapper">
+                <button id="open-scroll-map-btn" class="nav-btn">
+                    Scroll Map
+                </button>
+                <div class="nav-description">Scroll down the page to see the map change year by year from 2014 to 2023. The year updates automatically as you scroll.</div>
+            </div>
         </nav>
     </header>
 
