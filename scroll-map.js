@@ -166,8 +166,8 @@ function renderScrollMap() {
     }
 
     const container = d3.select('.sticky-map-section');
-    const width = Math.min(900, window.innerWidth * 0.75);
-    const height = Math.max(500, width * 0.6);
+    const width = Math.min(1200, window.innerWidth * 0.9);
+    const height = Math.max(600, width * 0.6);
 
     const svg = d3.select('#scroll-map-svg')
         .attr('width', width)
