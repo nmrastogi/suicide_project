@@ -87,31 +87,32 @@ header h1 {
 
 .nav-description {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 8px);
     left: 50%;
     transform: translateX(-50%);
-    margin-top: 10px;
     padding: 0.75rem 1rem;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.95);
     color: white;
     border-radius: 6px;
     font-size: 0.85rem;
-    line-height: 1.4;
+    line-height: 1.5;
     white-space: normal;
-    width: 300px;
+    width: 320px;
     max-width: 90vw;
     z-index: 1000;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     pointer-events: none;
     text-align: left;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+    transform: translateX(-50%) translateY(-5px);
 }
 
 .nav-btn-wrapper:hover .nav-description {
     opacity: 1;
     visibility: visible;
+    transform: translateX(-50%) translateY(0);
 }
 
 .nav-description::before {
