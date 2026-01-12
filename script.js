@@ -109,10 +109,15 @@ function setupControls() {
         updateAllVisualizations();
     });
 
-    // Show rate info explanation on initial load since rate is default
+    // Get rate info element reference
     const rateInfo = d3.select('#rate-info');
+    
+    // Show rate info explanation on initial load since rate is default
+    // Force it to be visible with !important
     if (selectedMetric === 'rate') {
-        rateInfo.style('display', 'block');
+        rateInfo.node().style.setProperty('display', 'block', 'important');
+    } else {
+        rateInfo.node().style.setProperty('display', 'none', 'important');
     }
 
     // Metric toggle (only for metric toggle buttons, not navigation buttons)
@@ -123,9 +128,9 @@ function setupControls() {
         
         // Show/hide age-adjusted rate explanation
         if (selectedMetric === 'rate') {
-            rateInfo.style('display', 'block');
+            rateInfo.node().style.setProperty('display', 'block', 'important');
         } else {
-            rateInfo.style('display', 'none');
+            rateInfo.node().style.setProperty('display', 'none', 'important');
         }
         
         updateAllVisualizations();
